@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,8 +25,14 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
             builder.Property(p => p.Description).IsRequired().HasMaxLength(1000);
             builder.Property(p => p.Category).HasMaxLength(100);
             builder.Property(p => p.Image).HasMaxLength(500);
-            builder.Property(p => p.Rating.Rate).HasColumnType("decimal(18,2)");
-            builder.Property(p => p.Rating.Count).HasColumnType("int");
+
+            builder.ComplexProperty(p => p.Rating, rating =>
+            {
+                rating.Property(r => r.Rate).HasColumnName("RatingRate").HasColumnType("decimal(18,2)");
+                rating.Property(r => r.Count).HasColumnName("RatingCount").HasColumnType("int");
+            });
+
         }
+
     }
 }
